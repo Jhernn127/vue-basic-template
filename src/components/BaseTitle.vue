@@ -1,9 +1,9 @@
 <template>
-    <div class="brand">
+  <div class="brand">
     <slot name="logo" />
     <h1 class="title">
       <slot />
-      </h1>
+    </h1>
     <slot name="logo" />
   </div>
 </template>
@@ -17,7 +17,7 @@
   }
 
   & .title {
-    @apply text-6xl font-thin tracking-widest text-slate-700 uppercase;
+    @apply text-center text-6xl font-thin uppercase tracking-widest text-slate-700;
   }
 }
 </style>
