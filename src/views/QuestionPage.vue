@@ -6,6 +6,7 @@ import useAPI from '@/composables/useAPI'
 import useColor from '@/composables/useColor'
 import useScore from '@/composables/useScore'
 import BaseTitle from '@/components/BaseTitle.vue'
+import DifficultyChip from '@/components/DifficultyChip.vue'
 
 
 
@@ -49,6 +50,7 @@ onMounted(async () => {
       >
         {{ answer.answer }}
       </div>
+      <DifficultyChip :difficulty="question.difficulty" />
     </div>
   </div>
 
