@@ -4,25 +4,32 @@ import { useRoute } from 'vue-router'
 
 import useAPI from '@/composables/useAPI'
 import useColor from '@/composables/useColor'
+import useScore from '@/composables/useScore'
 import BaseTitle from '@/components/BaseTitle.vue'
+
+
 
 const route = useRoute()
 const colors = useColor()
 const api = useAPI()
 const question = ref(null)
 const answers = ref([])
+const { changeScore } = useScore()
 onMounted(async () => {
   question.value = await api.getQuestion(route.params.id)
   answers.value.push({
     id: answers.value.length,
     correct: true,
     answer: question.value.correct_answer,
+    points: question.value.difficulty = 'easy' ? 10 : question.value.difficulty = 'medium' ? 20 : 3
+
   })
   question.value.incorrect_answer.map((answer) => {
     answers.value.push({
     id: answers.value.length,
     correct: false,
     answer,
+    point: -5,
     })
   })
 </script>
@@ -34,6 +41,7 @@ onMounted(async () => {
 
     <div class="answers">
       <div
+        @click="changeScore(answer.points)"
         :class="colors.getColor(answer.id)"
         v-for="answer in answers"
         :key="answer.id"
@@ -59,6 +67,9 @@ onMounted(async () => {
   @apply w-full grid  flex-grow grid-cols-2 gap-8;
   & .answer {
     @apply  text-center flex items-center justify-center w-full  rounded-lg text-white text-4xl;
+    &:hover {
+      @apply cursor-pointer;
+    }
   }
 }
 .loading {
