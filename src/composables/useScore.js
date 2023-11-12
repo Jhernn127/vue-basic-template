@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 
-const score = ref ( value: 0)
+const score = ref (value: 0)
 
 const userScore = () => {
     const changeScore = (value) => {

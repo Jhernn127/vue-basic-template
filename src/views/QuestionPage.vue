@@ -1,21 +1,33 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { shuffle } from 'lodash-es'
+
+import NotificationAnswers from '@/components/NotificationAnswers.vue'
 
 import useAPI from '@/composables/useAPI'
 import useColor from '@/composables/useColor'
 import useScore from '@/composables/useScore'
 import BaseTitle from '@/components/BaseTitle.vue'
 import DifficultyChip from '@/components/DifficultyChip.vue'
-
-
-
 const route = useRoute()
+const router = useRouter()
 const colors = useColor()
 const api = useAPI()
 const question = ref(null)
 const answers = ref([])
+const showNotification = ref(false)
+const isCorrect = ref(false)
 const { changeScore } = useScore()
+const handleAnswer = (points) => {
+  isCorrect.value = points > 0
+  showNotification.value = true
+  setTimeout(() => {
+    changeScore(points)
+    router.push('/')
+  }, 1000)
+}
+
 onMounted(async () => {
   question.value = await api.getQuestion(route.params.id)
   answers.value.push({
@@ -32,6 +44,7 @@ onMounted(async () => {
     answer,
     point: -5,
     })
+    answers.value = shuffle(answers.value)
   })
 </script>
 
@@ -39,10 +52,9 @@ onMounted(async () => {
   <div v-if="question" class="question-container">
     <BaseTitle>{{ question.category }} </BaseTitle>
     <p class="question">{{ question.question }}</p>
-
     <div class="answers">
       <div
-        @click="changeScore(answer.points)"
+        @click="handleAnswer(answer.points)"
         :class="colors.getColor(answer.id)"
         v-for="answer in answers"
         :key="answer.id"
@@ -55,6 +67,7 @@ onMounted(async () => {
   </div>
 
   <div v-else class="loading">Loading....</div>
+  <NotificationAnswers v-if="showNotification" :correct="isCorrect" />
 </template>
 
 <style lang="postcss" scoped>
